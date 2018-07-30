@@ -28,7 +28,6 @@ chars = sorted(list(set(text)))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-# cut the text in semi-redundant sequences of maxlen characters
 maxlen = 50
 step = 3
 sentences = []
@@ -38,7 +37,6 @@ for i in range(0, len(text) - maxlen, step):
     next_chars.append(text[i + maxlen])
 print('Number of Sequences:', len(sentences))
 
-# vectorize the input2/54
 x = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
 y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
 for i, sentence in enumerate(sentences):
@@ -47,7 +45,6 @@ for i, sentence in enumerate(sentences):
     y[i, char_indices[next_chars[i]]] = 1
 
 
-# building an LSTM to train using the given
 print('Building the LSTM Model')
 model = Sequential()
 model.add(LSTM(128, input_shape=(maxlen, len(chars))))
@@ -57,7 +54,6 @@ model.add(Activation('softmax'))
 optimizer = RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-# A function that allows us to sample an index from a probability array
 def sample(preds, temperature=1.0):
     preds = np.asarray(preds).astype('float64')
     preds = np.log(preds) / temperature
@@ -66,10 +62,9 @@ def sample(preds, temperature=1.0):
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
 
-# Function that prints at the end of each epock
 def on_epoch_end(epoch, logs):
     print()
-    if(epoch > 0):
+    if(epoch > 95):
         print('----- Generating text after Epoch: %d\n' % epoch)
         for diversity in [0.2, 0.5, 1.0]:
             
@@ -97,7 +92,7 @@ print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
 model.fit(x, y,
           batch_size=128,
-          epochs=2,
+          epochs=100,
           callbacks=[print_callback])
 
 print("LSTM Network Trained")
