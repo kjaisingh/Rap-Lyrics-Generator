@@ -9,7 +9,7 @@ In order to run the Generator, the following must be done after getting into the
 sudo apt-get install unzip
 ```
 ```
-unzip lyrics.csv..zip
+unzip lyrics.csv.zip
 ```
 
 2. Train the LSTM network through the following command:
